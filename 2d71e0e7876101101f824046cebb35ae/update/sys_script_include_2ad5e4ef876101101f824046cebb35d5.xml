@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_684094_pdf_filla.PDFTemplateUtils</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>PDFTemplateUtils</name>
+        <script><![CDATA[var PDFTemplateUtils = Class.create();
+PDFTemplateUtils.prototype = {
+    initialize: function() {
+        this.PDFGenerationAPI = new sn_pdfgeneratorutils.PDFGenerationAPI;
+        this.PDFTemplateTableName = "x_684094_pdf_filla_pdf_template";
+    },
+
+    /**
+     * Find the active PDF template for a specific table
+     * @param {String} tableName  name of the table whose active PDF Template is to be searched for.
+     * @returns {GlideRecord} of active PDF Template. If the PDF Template is not present or inactive returns null
+     */
+    getActivePDFTemplate: function(tableName) {
+        var grPDFTemplate = new GlideRecord(this.PDFTemplateTableName);
+        grPDFTemplate.addQuery("active", true);
+        grPDFTemplate.addQuery("table.name", tableName);
+        grPDFTemplate.query();
+        if (grPDFTemplate.next())
+            return grPDFTemplate;
+        else
+            return null;
+    },
+
+    /**
+     * Populates the PDF template and generates it on a specific record
+     * @param {String} tableName name of the table to which the target record belongs.
+     * @param {String} targetRecordSysID sys_id of the record to which the attachment will be uploaded
+     * @returns {Object} Object containing the result of uploading the attachment. It has two keys. "Status" can be "success" or "error". "Message" contains a message of the result of the operation 
+     */
+    fillPDFTemplate: function(tableName, targetRecordSysID) {
+        var resultObject = {};
+        var grPDFTemplate = this.getActivePDFTemplate(tableName);
+
+        if (!gs.nil(grPDFTemplate)) {
+            var pdfTemplateAttachmentSysID = this._getAttachmentSysID(grPDFTemplate.getValue("sys_id"));
+
+            if (pdfTemplateAttachmentSysID) {
+                var pdfIsFillableObject = this.PDFGenerationAPI.isDocumentFillable(pdfTemplateAttachmentSysID);
+                var pdfIsFillable = pdfIsFillableObject.document_editable;
+                
+                if (pdfIsFillable == "true") {
+                    var fieldMap = this._getFieldsMapping(grPDFTemplate, tableName, targetRecordSysID);
+                    var pdfCreationResult = this.PDFGenerationAPI.fillDocumentFields(fieldMap, pdfTemplateAttachmentSysID, tableName, targetRecordSysID, grPDFTemplate.getValue("pdf_name"));
+                    resultObject.status = pdfCreationResult.status;
+                    resultObject.message = pdfCreationResult.message;
+                }
+            }
+            else {
+                resultObject.status = "error";
+                resultObject.message = "PDF Attachment not found on PDF Template number " + grPDFTemplate.number ;
+            }
+        }
+        else {
+            resultObject.status = "error";
+            resultObject.message = "No active PDF Template found for table " + tableName ;
+        }
+        return resultObject;
+    },
+
+    /**
+     * Check if there is a PDF attachment on the PDF template
+     * @param {String} pdfTemplateSysID  sys_id of PDF Template
+     * @returns {String} Returns sys_id of the attachment. If the attachment is not present returns null
+     */
+    _getAttachmentSysID: function(pdfTemplateSysID) {
+        var grAttachment = new GlideRecord("sys_attachment");
+        grAttachment.addQuery("table_name", this.PDFTemplateTableName);
+        grAttachment.addQuery("content_type", "application/pdf");
+        grAttachment.addQuery("table_sys_id", pdfTemplateSysID);
+        grAttachment.orderBy("sys_created_on");
+        grAttachment.query();
+        if (grAttachment.next())
+            return grAttachment.getValue("sys_id");
+        else
+            return null;
+    },
+
+    /**
+     * Checks the mapping indicated on the 'fields_mapping' field and obtains the values from the target record
+     * @param {GlideRecord} grPDFTemplate  PDF Template from which the field mapping will be controlled
+     * @param {String} tableName name of the table to which the target record belongs
+     * @param {String} targetRecordSysID sys_id of the record to which the attachment will be uploaded
+     * @returns {Object} field mapping populated with correct values from target record
+     */
+    _getFieldsMapping: function(grPDFTemplate, tableName, targetRecordSysID) {
+        var fieldMap = new Object();
+        var grRecord = new GlideRecord(tableName);
+        if (grRecord.get(targetRecordSysID)) {
+            for(var name in grPDFTemplate.fields_mapping) {
+                fieldMap[name] = grRecord.getDisplayValue(grPDFTemplate.fields_mapping[name]);
+            }
+        }
+        return fieldMap;
+    },
+
+    type: 'PDFTemplateUtils'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>alberto.colombo</sys_created_by>
+        <sys_created_on>2022-02-14 09:16:31</sys_created_on>
+        <sys_id>2ad5e4ef876101101f824046cebb35d5</sys_id>
+        <sys_mod_count>16</sys_mod_count>
+        <sys_name>PDFTemplateUtils</sys_name>
+        <sys_package display_value="PDF Fillable" source="x_684094_pdf_filla">2d71e0e7876101101f824046cebb35ae</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="PDF Fillable">2d71e0e7876101101f824046cebb35ae</sys_scope>
+        <sys_update_name>sys_script_include_2ad5e4ef876101101f824046cebb35d5</sys_update_name>
+        <sys_updated_by>alberto.colombo</sys_updated_by>
+        <sys_updated_on>2022-02-14 12:43:47</sys_updated_on>
+    </sys_script_include>
+</record_update>
