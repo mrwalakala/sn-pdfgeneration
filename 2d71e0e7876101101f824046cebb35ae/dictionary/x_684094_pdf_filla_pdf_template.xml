@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element label="PDF Template" max_length="40" name="x_684094_pdf_filla_pdf_template" sizeclass="1" type="collection">
+        <element label="Active" max_length="40" name="active" type="boolean"/>
+        <element label="Description" max_length="4000" name="description" type="string"/>
+        <element label="Fields Mapping" max_length="4000" name="fields_mapping" type="simple_name_values"/>
+        <element label="Name" max_length="255" name="name" type="string"/>
+        <element attributes="ignore_filter_on_new=true" default="javascript:global.getNextObjNumberPadded();" label="Number" max_length="40" name="number" type="string"/>
+        <element label="PDF Name" max_length="255" name="pdf_name" type="string"/>
+        <element label="Table" max_length="32" name="table" reference="sys_db_object" type="reference"/>
+        <index name="index">
+            <element name="table"/>
+        </index>
+    </element>
+</database>

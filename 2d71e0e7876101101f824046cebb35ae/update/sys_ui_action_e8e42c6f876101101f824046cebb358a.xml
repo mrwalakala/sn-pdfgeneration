@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="09ff3d105f231000b12e3572f2b4775d" table="sys_ui_action">
+    <sys_ui_action action="INSERT_OR_UPDATE">
+        <action_name/>
+        <active>true</active>
+        <client>false</client>
+        <client_script_v2><![CDATA[function onClick(g_form) {
+
+}]]></client_script_v2>
+        <comments/>
+        <condition>!gs.nil(new PDFTemplateUtils().getActivePDFTemplate(current.sys_class_name))</condition>
+        <form_action>true</form_action>
+        <form_button>false</form_button>
+        <form_button_v2>true</form_button_v2>
+        <form_context_menu>false</form_context_menu>
+        <form_link>true</form_link>
+        <form_menu_button_v2>false</form_menu_button_v2>
+        <form_style/>
+        <format_for_configurable_workspace>true</format_for_configurable_workspace>
+        <hint/>
+        <isolate_script>false</isolate_script>
+        <list_action>false</list_action>
+        <list_banner_button>false</list_banner_button>
+        <list_button>false</list_button>
+        <list_choice>false</list_choice>
+        <list_context_menu>false</list_context_menu>
+        <list_link>false</list_link>
+        <list_save_with_form_button>false</list_save_with_form_button>
+        <list_style/>
+        <messages/>
+        <name>Generate PDF from template</name>
+        <onclick/>
+        <order>100</order>
+        <script><![CDATA[var result = new PDFTemplateUtils().fillPDFTemplate(current.sys_class_name, current.sys_id);
+if (result.status == "success")
+	gs.addInfoMessage(result.message);
+else
+	gs.addErrorMessage(result.message);
+action.setRedirectURL(current);]]></script>
+        <show_insert>false</show_insert>
+        <show_multiple_update>false</show_multiple_update>
+        <show_query>false</show_query>
+        <show_update>true</show_update>
+        <sys_class_name>sys_ui_action</sys_class_name>
+        <sys_created_by>alberto.colombo</sys_created_by>
+        <sys_created_on>2022-02-14 08:58:05</sys_created_on>
+        <sys_domain>09ff3d105f231000b12e3572f2b4775d</sys_domain>
+        <sys_domain_path>!!!/!!!/</sys_domain_path>
+        <sys_id>e8e42c6f876101101f824046cebb358a</sys_id>
+        <sys_mod_count>11</sys_mod_count>
+        <sys_name>Generate PDF from template</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="PDF Fillable" source="x_684094_pdf_filla">2d71e0e7876101101f824046cebb35ae</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="PDF Fillable">2d71e0e7876101101f824046cebb35ae</sys_scope>
+        <sys_update_name>sys_ui_action_e8e42c6f876101101f824046cebb358a</sys_update_name>
+        <sys_updated_by>alberto.colombo</sys_updated_by>
+        <sys_updated_on>2022-02-14 12:57:20</sys_updated_on>
+        <table>incident</table>
+        <ui11_compatible>true</ui11_compatible>
+        <ui16_compatible>false</ui16_compatible>
+    </sys_ui_action>
+</record_update>
